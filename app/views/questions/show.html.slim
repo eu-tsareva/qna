@@ -1,2 +1,25 @@
 h1= @question.title
 p= @question.body
+p= @question.user.name
+
+- if @question.user == current_user
+  ul.question__actions
+    li= link_to 'Edit', edit_question_path(@question)
+    li= link_to 'Delete', question_path(@question), method: :delete, data: { confirm: 'Are your sure?' }
+
+ul.question__answers
+  - @question.answers.each do |answer|
+    li.answer
+      p= answer.body
+      p= answer.user.name
+      - if answer.user == current_user
+        ul.answer__actions
+          li= link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are your sure?' }
+
+
+= form_with model: [@question, @question.answers.new], local: true do |f|
+  = f.label :body
+  = f.text_area :body
+  = f.submit 'Post your answer'
+
+

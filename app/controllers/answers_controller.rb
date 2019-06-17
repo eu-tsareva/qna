@@ -1,17 +1,22 @@
 class AnswersController < ApplicationController
+  before_action :authenticate_user!, only: %i[create destroy]
+
   def show
   end
 
-  def new
+  def create
+    answer = question.answers.new(answer_params)
+    answer.user = current_user
+    if answer.save
+      redirect_to question, notice: 'Your answer was successfully created'
+    else
+      redirect_to question
+    end
   end
 
-  def create
-    @answer = question.answers.new(answer_params)
-    if @answer.save
-      redirect_to @answer
-    else
-      render :new
-    end
+  def destroy
+    answer.destroy
+    redirect_to answer.question, notice: 'Your answer was successfully deleted.'
   end
 
   private
@@ -27,6 +32,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, :user_id)
   end
 end
