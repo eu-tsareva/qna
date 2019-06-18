@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:question) { create(:question) }
+  let(:user) { create(:user) }
 
   describe 'GET #index' do
     let(:questions) { create_list(:question, 3) }
@@ -30,6 +31,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login(user) }
     before { get :new }
 
     it 'assigns a new Question to @question' do
@@ -42,6 +44,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { login(user) }
     before { get :edit, params: { id: question }  }
 
     it 'assigns the requested question to @question' do
@@ -54,16 +57,21 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }
+
     context 'with valid attributes' do
-      it 'saves a new question to the database' do
-        expect { post :create, params: { question: attributes_for(:question) } }
-          .to change(Question, :count)
-          .by(1)
+      let(:action) { post :create, params: { question: attributes_for(:question) } }
+
+      it 'saves new question to the database' do
+        expect { action }.to change(Question, :count).by(1)
+      end
+
+      it 'saves new question to the logged user' do
+        expect { action }.to change(user.questions, :count).by(1)
       end
 
       it 'redirects to show view' do
-        post :create, params: { question: attributes_for(:question) }
-        expect(response).to redirect_to assigns(:question)
+        expect(action).to redirect_to assigns(:question)
       end
     end
 
@@ -80,6 +88,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    before { login(user) }
+
     context 'with valid attributes' do
       it 'assigns the requested question to @question' do
         patch :update, params: { id: question, question: attributes_for(:question) }
@@ -100,11 +110,13 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context 'with invalid attributes' do
+      let(:question_copy) { question.dup }
       before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+
       it 'does not change question' do
         question.reload
-        expect(question.title).to eq('MyString')
-        expect(question.body).to eq('MyText')
+        expect(question.title).to eq(question_copy.title)
+        expect(question.body).to eq(question_copy.body)
       end
 
       it 're-renders edit view' do
@@ -114,17 +126,31 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    let!(:question) { create(:question) }
+    before { login(user) }
+    let(:action) { delete :destroy, params: { id: question } }
 
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: question } }
-        .to change(Question, :count)
-        .by(-1)
+    context 'by author' do
+      let!(:question) { create(:question, user: user) }
+
+      it 'deletes the question' do
+        expect { action }.to change(Question, :count).by(-1)
+      end
+
+      it 'redirects to index' do
+        expect(action).to redirect_to questions_path
+      end
     end
 
-    it 'redirects to index' do
-      delete :destroy, params: { id: question }
-      expect(response).to redirect_to questions_path
+    context 'by another user' do
+      let!(:question) { create(:question, user: create(:user)) }
+
+      it 'does not delete the question' do
+        expect { action }.not_to change(Question, :count)
+      end
+
+      it 'redirects to show' do
+        expect(action).to redirect_to question
+      end
     end
   end
 end
