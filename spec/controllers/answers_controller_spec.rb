@@ -37,19 +37,17 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    let(:action) { delete :destroy, params: { id: answer } }
 
     context 'by author' do
       let!(:answer) { create(:answer, question: question, user: user) }
 
       it 'deletes answer' do
-        expect { delete :destroy, params: { id: answer } }
-          .to change(Answer, :count)
-          .by(-1)
+        expect { action }.to change(Answer, :count).by(-1)
       end
 
       it 'redirects to question show' do
-        delete :destroy, params: { id: answer }
-        expect(response).to redirect_to question
+        expect(action).to redirect_to question
       end
     end
 
@@ -57,13 +55,11 @@ RSpec.describe AnswersController, type: :controller do
       let!(:answer) { create(:answer, question: question, user: create(:user)) }
 
       it 'does not delete answer' do
-        expect { delete :destroy, params: { id: answer } }
-          .not_to change(Answer, :count)
+        expect { action }.not_to change(Answer, :count)
       end
 
       it 'redirects to question show' do
-        delete :destroy, params: { id: answer }
-        expect(response).to redirect_to question
+        expect(action).to redirect_to question
       end
     end
   end

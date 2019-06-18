@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :question do
     user
-    title { "MyString" }
-    body { "MyText" }
+    sequence(:title) { |n| "Question Title - #{n}" }
+    sequence(:body) { |n| "Question Body - #{n}" }
 
     trait :invalid do
       title { nil }
