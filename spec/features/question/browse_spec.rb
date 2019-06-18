@@ -9,7 +9,7 @@ feature 'User can see all questions', %q(
     questions = create_list(:question, 3)
     visit questions_path
 
-    3.times { |n| expect(page).to have_content(questions[n].title) }
+    questions.each { |question| expect(page).to have_content(question.title) }
   end
 end
 
@@ -26,6 +26,6 @@ feature 'User can see a question with its answers', %q(
 
     expect(page).to have_content question.title
     expect(page).to have_content question.body
-    3.times { |n| expect(page).to have_content(answers[n].body) }
+    answers.each { |answer| expect(page).to have_content(answer.body) }
   end
 end

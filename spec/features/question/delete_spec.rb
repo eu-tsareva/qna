@@ -25,7 +25,7 @@ feature 'User can delete his own question', %q(
       question = create(:question, user: create(:user))
       visit question_path(question)
 
-      expect(page).to have_no_content 'Delete'
+      expect(page).to have_no_link 'Delete'
     end
   end
 
@@ -33,6 +33,6 @@ feature 'User can delete his own question', %q(
     question = create(:question, user: user1)
     visit question_path(question)
 
-    expect(page).to have_no_content 'Delete'
+    expect(page).to have_no_link 'Delete'
   end
 end

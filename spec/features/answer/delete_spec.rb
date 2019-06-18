@@ -28,7 +28,7 @@ feature 'User can delete his own answer', %q(
       visit question_path(question)
 
       within('.answer') do
-        expect(page).to have_no_content 'Delete'
+        expect(page).to have_no_link 'Delete'
       end
     end
   end
@@ -38,7 +38,7 @@ feature 'User can delete his own answer', %q(
     visit question_path(question)
 
     within('.answer') do
-      expect(page).to have_no_content 'Delete'
+      expect(page).to have_no_link 'Delete'
     end
   end
 end
