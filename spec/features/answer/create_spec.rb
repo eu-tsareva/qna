@@ -7,17 +7,27 @@ feature 'Authenticated user answers the question', %q(
 
   given(:question) { create(:question) }
 
-  scenario 'Authenticated user answers the question' do
-    sign_in(create(:user))
+  describe 'Authenticated user ' do
+    background do
+      sign_in(create(:user))
+      visit question_path(question)
+    end
 
-    visit question_path(question)
-    fill_in 'Body', with: 'My awesome answer'
-    click_on 'Post your answer'
+    scenario 'answers the question' do
+      fill_in 'Body', with: 'My awesome answer'
+      click_on 'Post your answer'
 
-    expect(page).to have_content 'My awesome answer'
+      expect(page).to have_content 'My awesome answer'
+    end
+
+    scenario 'answers the question with errors' do
+      click_on 'Post your answer'
+
+      expect(page).to have_content "Body can't be blank"
+    end
   end
 
-  scenario "Authenticated user answers the question" do
+  scenario 'Unauthenticated user answers the question' do
     visit question_path(question)
     fill_in 'Body', with: 'My awesome answer'
     click_on 'Post your answer'
