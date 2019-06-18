@@ -14,7 +14,7 @@ feature 'User can sign up', %q(
     fill_in 'Email', with: 'user@email.com'
     fill_in 'Password', with: '123456'
     fill_in 'Password confirmation', with: '123456'
-    find('input[type=submit]').click
+    within('form') { click_on 'Sign up' }
 
     expect(page).to have_content 'Welcome! You have signed up successfully.'
   end
@@ -23,7 +23,7 @@ feature 'User can sign up', %q(
     fill_in 'Email', with: 'user@email.com'
     fill_in 'Password', with: '123'
     fill_in 'Password confirmation', with: '1234'
-    find('input[type=submit]').click
+    within('form') { click_on 'Sign up' }
 
     expect(page).to have_css '#error_explanation'
   end
