@@ -13,14 +13,15 @@ feature 'Authenticated user answers the question', %q(
       visit question_path(question)
     end
 
-    scenario 'answers the question' do
+    scenario 'answers the question', js: true do
       fill_in 'Body', with: 'My awesome answer'
       click_on 'Post your answer'
 
-      expect(page).to have_content 'My awesome answer'
+      expect(current_path).to eq question_path(question)
+      within('.question__answers') { expect(page).to have_content 'My awesome answer' }
     end
 
-    scenario 'answers the question with errors' do
+    scenario 'answers the question with errors', js: true do
       click_on 'Post your answer'
 
       expect(page).to have_content "Body can't be blank"

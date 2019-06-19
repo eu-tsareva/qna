@@ -8,15 +8,7 @@ p= @question.user.name
     li= link_to 'Delete', question_path(@question), method: :delete, data: { confirm: 'Are your sure?' }
 
 ul.question__answers
-  - @question.answers.each do |answer|
-    - unless answer.new_record?
-      li.answer
-        p= answer.body
-        p= answer.user.name
-        - if current_user&.author_of?(answer)
-          ul.answer__actions
-            li= link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are your sure?' }
-
+  = render @question.answers
 
 = render 'answers/new', question: @question, answer: @answer
 
