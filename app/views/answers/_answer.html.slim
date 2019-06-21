@@ -1,8 +1,13 @@
 - if answer.persisted?
-  li.answer
+  li.answer id = "answer-#{answer.id}"
     p= answer.body
     p= answer.user.name
     - if current_user&.author_of?(answer)
       ul.answer__actions
+        li= link_to 'Edit', '#', class: 'edit-answer-link'
         li= link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are your sure?' }
 
+    = form_with model: answer, class: 'hide' do |f|
+      = f.label :body
+      = f.text_area :body
+      = f.submit 'Save'
