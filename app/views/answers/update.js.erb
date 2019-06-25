@@ -5,5 +5,5 @@ $answerItem
   .html('<%= render 'shared/errors', resource: answer %>');
 
 <% unless answer.errors.present? %>
-  $answerItem.html('<%= j render(answer) %>');
+  $answerItem.replaceWith('<%= j render(answer) %>');
 <% end %>

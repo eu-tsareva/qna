@@ -1,14 +1,13 @@
-.row.justify-content-center
-  .col-sm-6
-  = render 'shared/errors',resource: @question
-.row.justify-content-center
-  .col-sm-6
-    = form_with model: @question, class: 'form' do |f|
-      .form-group
-        = f.label :title
-        = f.text_field :title, class: 'form-control'
-      .form-group
-        = f.label :body
-        = f.text_area :body, class: 'form-control', rows: 4
+.question__errors
+  = render 'shared/errors',resource: question
 
-      = f.submit 'Ask', class: 'btn btn-primary'
+.question__form
+  = form_with model: question, class: 'form' do |f|
+    .form-group
+      = f.label :title
+      = f.text_field :title, class: 'form-control'
+    .form-group
+      = f.label :body
+      = f.text_area :body, class: 'form-control', rows: 4
+
+    = f.submit class: 'btn btn-primary'

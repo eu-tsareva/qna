@@ -1,6 +1,6 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
-  before_action :load_question, only: %i[show edit update destroy]
+  before_action :load_question, only: %i[show update destroy]
 
   def index
     @questions = Question.all
@@ -23,14 +23,11 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def edit
-  end
-
   def update
-    if @question.update(question_params)
-      redirect_to @question, notice: 'Your question was successfully updated.'
+    if current_user.author_of?(@question)
+      @question.update(question_params)
     else
-      render :edit
+      redirect_to @question, notice: 'You have no rights to edit this question.'
     end
   end
 

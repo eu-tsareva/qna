@@ -1,6 +1,7 @@
-= form_with model: [question, answer], class: 'new-answer' do |f|
+= form_with model: [question, answer], class: 'new-answer form' do |f|
   .answer__errors= render 'shared/errors', resource: answer
 
-  = f.label :body
-  = f.text_area :body
-  = f.submit 'Post your answer'
+  .form-group
+    = f.label :body
+    = f.text_area :body, class: 'form-control', rows: 4
+  = f.submit 'Post your answer', class: 'btn btn-primary'

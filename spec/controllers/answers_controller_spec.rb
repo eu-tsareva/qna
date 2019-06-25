@@ -85,11 +85,11 @@ RSpec.describe AnswersController, type: :controller do
       context 'with invalid attributes' do
         let(:action) { patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js }
 
-        it 'changes answer attributes' do
+        it 'does not change answer attributes' do
           expect { action }.to_not change(answer, :body)
         end
 
-        it 'changes answer attributes' do
+        it 'renders update view' do
           expect(action).to render_template :update
         end
       end
@@ -105,6 +105,11 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirects to question' do
         expect(action).to redirect_to question
+      end
+
+      it 'flashes error message' do
+        action
+        expect(flash[:notice]).to eq 'You have no rights to edit this answer.'
       end
     end
   end

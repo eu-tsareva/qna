@@ -1,16 +1,22 @@
 - if answer.persisted?
-  li.answer id = "answer-#{answer.id}"
-    p= answer.body
-    p= answer.user.name
-    - if current_user&.author_of?(answer)
-      ul.answer__actions
-        li= link_to 'Edit', '#', class: 'edit-answer-link'
-        li= link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are your sure?' }
+  li.answer.list-group-item.px-0 id = "answer-#{answer.id}"
+    p.mb-1= answer.body
 
+    .d-flex.justify-content-between
+      div
+        small= answer.updated_at.strftime('%d.%m.%Y')
+        small &nbsp;by&nbsp;
+        small.text-muted= answer.user.name
 
-    = form_with model: answer, class: 'hide' do |f|
-      .answer__errors= render 'shared/errors', resource: answer
+      - if current_user&.author_of?(answer)
+        .answer__actions.d-flex.justify-content-end
+          = link_to 'Edit', '#', class: 'edit-answer-link mr-2'
+          = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are your sure?' }
 
-      = f.label :body
-      = f.text_area :body
-      = f.submit 'Save'
+    .answer__form
+      = form_with model: answer, class: 'hide form' do |f|
+        .answer__errors= render 'shared/errors', resource: answer
+        .form-group
+          = f.label :body
+          = f.text_area :body, class: 'form-control'
+        = f.submit 'Save', class: 'btn btn-primary'

@@ -1,14 +1,10 @@
-h1= @question.title
-p= @question.body
-p= @question.user.name
+.container
+  .question.mb-5
+    .question__info.mb-5
+      = render 'question', question: @question
 
-- if current_user&.author_of?(@question)
-  ul.question__actions
-    li= link_to 'Edit', edit_question_path(@question)
-    li= link_to 'Delete', question_path(@question), method: :delete, data: { confirm: 'Are your sure?' }
+    ul.question__answers.list-group.list-group-flush
+      = render @question.answers
 
-ul.question__answers
-  = render @question.answers
-
-= render 'answers/new', question: @question, answer: @answer
+  = render 'answers/new', question: @question, answer: @answer
 
