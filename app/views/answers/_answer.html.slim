@@ -11,7 +11,7 @@
       - if current_user&.author_of?(answer)
         .answer__actions.d-flex.justify-content-end
           = link_to 'Edit', '#', class: 'edit-answer-link mr-2'
-          = link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are your sure?' }
+          = link_to 'Delete', answer_path(answer), remote: true, method: :delete, data: { confirm: 'Are your sure?' }
 
     .answer__form
       = form_with model: answer, class: 'hide form' do |f|

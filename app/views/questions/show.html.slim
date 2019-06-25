@@ -1,10 +1,9 @@
-.container
-  .question.mb-5
-    .question__info.mb-5
-      = render 'question', question: @question
+.question.mb-5
+  .question__info.mb-5
+    = render 'question', question: @question
 
-    ul.question__answers.list-group.list-group-flush
-      = render @question.answers
+  ul.question__answers.list-group.list-group-flush
+    = render @question.answers
 
-  = render 'answers/new', question: @question, answer: @answer
+= render 'answers/new', question: @question, answer: @answer
 

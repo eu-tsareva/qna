@@ -37,7 +37,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    let(:action) { delete :destroy, params: { id: answer } }
+    let(:action) { delete :destroy, params: { id: answer }, format: :js }
 
     context 'by author' do
       let!(:answer) { create(:answer, question: question, user: user) }
@@ -46,8 +46,8 @@ RSpec.describe AnswersController, type: :controller do
         expect { action }.to change(Answer, :count).by(-1)
       end
 
-      it 'redirects to question show' do
-        expect(action).to redirect_to question
+      it 'renders destroy view' do
+        expect(action).to render_template(:destroy)
       end
     end
 
@@ -60,6 +60,11 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirects to question' do
         expect(action).to redirect_to question
+      end
+
+      it 'flashes error message' do
+        action
+        expect(flash[:notice]).to eq 'You have no rights to delete this answer.'
       end
     end
   end

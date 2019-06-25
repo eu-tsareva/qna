@@ -9,8 +9,9 @@ html
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
 
   body
-    div= notice
-    div= alert
     = render 'shared/nav'
-    = yield
+    .container
+      div.notice= notice
+      div.alert= alert
+      = yield
 

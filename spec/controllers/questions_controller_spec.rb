@@ -151,6 +151,11 @@ RSpec.describe QuestionsController, type: :controller do
       it 'redirects to index' do
         expect(action).to redirect_to questions_path
       end
+
+      it 'flashes success message' do
+        action
+        expect(flash[:notice]).to eq 'Your question was successfully deleted.'
+      end
     end
 
     context 'by another user' do
@@ -162,6 +167,11 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'redirects to show' do
         expect(action).to redirect_to question
+      end
+
+      it 'flashes error message' do
+        action
+        expect(flash[:notice]).to eq 'You have no rights to delete this question.'
       end
     end
   end
