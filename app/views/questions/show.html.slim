@@ -3,7 +3,7 @@
     = render 'question', question: @question
 
   ul.question__answers.list-group.list-group-flush
-    = render @question.answers
+    = render @question.answers.order(best: :desc)
 
 = render 'answers/new', question: @question, answer: @answer
 

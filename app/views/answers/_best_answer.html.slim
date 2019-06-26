@@ -1,0 +1,4 @@
+- if answer.best?
+  .mb-1.text-success.answer__best-text Best Answer
+- elsif current_user&.author_of?(answer.question)
+  = link_to 'Mark as the Best', best_answer_path(answer), method: :patch, remote: true, class: 'answer__best-link mb-1'

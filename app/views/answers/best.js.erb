@@ -1,0 +1,7 @@
+<% unless @best_before.nil? %>
+  $('#answer-<%= @best_before.id %>').find('.answer__best').html('<%= j render "answers/best_answer", answer: @best_before %>');
+<% end %>
+
+$('#answer-<%= answer.id %>').prependTo('.question__answers');
+$('#answer-<%= answer.id %>').find('.answer__best').html('<%= j render "answers/best_answer", answer: answer %>');
+

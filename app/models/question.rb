@@ -3,5 +3,10 @@ class Question < ApplicationRecord
   belongs_to :user
 
   validates :title, :body, presence: true
+
+  def best_answer
+    answers.find(&:best)
+  end
 end
 
+# $('.question__answers').html('<%= j render answer.question.answers.order(best: :desc) %>');
