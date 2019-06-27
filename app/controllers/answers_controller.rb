@@ -26,8 +26,7 @@ class AnswersController < ApplicationController
   def best
     if current_user.author_of?(answer.question)
       @best_before = answer.question.best_answer
-      @best_before&.update_attribute(:best, false)
-      answer.update_attribute(:best, true)
+      answer.mark_as_best!
     else
       redirect_to answer.question, notice: 'You have no rights to do this action.'
     end

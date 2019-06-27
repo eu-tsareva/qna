@@ -8,5 +8,3 @@ class Question < ApplicationRecord
     answers.find(&:best)
   end
 end
-
-# $('.question__answers').html('<%= j render answer.question.answers.order(best: :desc) %>');
