@@ -25,6 +25,10 @@ RSpec.describe QuestionsController, type: :controller do
       expect(assigns(:question)).to eq(question)
     end
 
+    it 'assigns new question answer to @answer' do
+      expect(assigns(:answer)).to be_a_new(Answer)
+    end
+
     it 'renders show view' do
       expect(response).to render_template(:show)
     end
@@ -43,18 +47,6 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe 'GET #edit' do
-    before { login(user) }
-    before { get :edit, params: { id: question }  }
-
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq(question)
-    end
-
-    it 'renders edit view' do
-      expect(response).to render_template(:edit)
-    end
-  end
 
   describe 'POST #create' do
     before { login(user) }
@@ -90,37 +82,57 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'PATCH #update' do
     before { login(user) }
 
-    context 'with valid attributes' do
-      it 'assigns the requested question to @question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(assigns(:question)).to eq(question)
+    context 'by author' do
+      let!(:question) { create(:question, user: user) }
+
+      context 'with valid attributes' do
+        it 'assigns the requested question to @question' do
+          patch :update, params: { id: question, question: attributes_for(:question), format: :js }
+          expect(assigns(:question)).to eq(question)
+        end
+
+        it 'changes question attributes' do
+          patch :update, params: { id: question, question: { title: 'new title', body: 'new body' }, format: :js }
+          question.reload
+          expect(question.title).to eq('new title')
+          expect(question.body).to eq('new body')
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
+          expect(response).to render_template :update
+        end
       end
 
-      it 'changes question attribute' do
-        patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }
-        question.reload
-        expect(question.title).to eq('new title')
-        expect(question.body).to eq('new body')
-      end
+      context 'with invalid attributes' do
+        let(:action) { patch :update, params: { id: question, question: attributes_for(:question, :invalid), format: :js } }
 
-      it 'redirects to updated question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(response).to redirect_to question
+        it 'does not change question' do
+          expect { action }.to_not change(question, :title)
+          expect { action }.to_not change(question, :body)
+        end
+
+        it 'renders update view' do
+          expect(action).to render_template :update
+        end
       end
     end
 
-    context 'with invalid attributes' do
-      let(:question_copy) { question.dup }
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+    context 'by another user' do
+      let(:action) { patch :update, params: { id: question, question: attributes_for(:question), format: :js } }
 
-      it 'does not change question' do
-        question.reload
-        expect(question.title).to eq(question_copy.title)
-        expect(question.body).to eq(question_copy.body)
+      it 'does not edit answer' do
+        expect { action }.to_not change(question, :title)
+        expect { action }.to_not change(question, :body)
       end
 
-      it 're-renders edit view' do
-        expect(response).to render_template(:edit)
+      it 'redirects to question' do
+        expect(action).to redirect_to question
+      end
+
+      it 'flashes error message' do
+        action
+        expect(flash[:notice]).to eq 'You have no rights to edit this question.'
       end
     end
   end
@@ -139,6 +151,11 @@ RSpec.describe QuestionsController, type: :controller do
       it 'redirects to index' do
         expect(action).to redirect_to questions_path
       end
+
+      it 'flashes success message' do
+        action
+        expect(flash[:notice]).to eq 'Your question was successfully deleted.'
+      end
     end
 
     context 'by another user' do
@@ -150,6 +167,11 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'redirects to show' do
         expect(action).to redirect_to question
+      end
+
+      it 'flashes error message' do
+        action
+        expect(flash[:notice]).to eq 'You have no rights to delete this question.'
       end
     end
   end

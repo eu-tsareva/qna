@@ -1,0 +1,9 @@
+var $answerItem = $('#answer-<%= answer.id %>');
+
+$answerItem
+  .find('.answer__errors')
+  .html('<%= render 'shared/errors', resource: answer %>');
+
+<% unless answer.errors.present? %>
+  $answerItem.replaceWith('<%= j render(answer) %>');
+<% end %>

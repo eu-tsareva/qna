@@ -3,5 +3,8 @@ class Question < ApplicationRecord
   belongs_to :user
 
   validates :title, :body, presence: true
-end
 
+  def best_answer
+    answers.find(&:best)
+  end
+end

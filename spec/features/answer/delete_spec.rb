@@ -11,13 +11,13 @@ feature 'User can delete his own answer', %q(
   describe 'Authenticated user' do
     background { sign_in(user1) }
 
-    scenario 'deletes his answer', js: true, driver: :webkit do
+    scenario 'deletes his answer', js: true do
       answer = create(:answer, question: question, user: user1)
       visit question_path(question)
 
-      within('.answer .answer__actions') { click_link 'Delete' }
-
-      page.driver.browser.accept_js_confirms
+      page.accept_confirm do
+        within('.answer .answer__actions') { click_link 'Delete' }
+      end
 
       expect(page).to have_content 'Your answer was successfully deleted.'
       expect(page).to have_no_content answer.body

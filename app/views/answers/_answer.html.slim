@@ -1,0 +1,24 @@
+- if answer.persisted?
+  li.answer.list-group-item.px-0 id = "answer-#{answer.id}"
+    .answer__best= render 'answers/best_answer', answer: answer
+
+    p.mb-1= answer.body
+
+    .d-flex.justify-content-between
+      div
+        small= answer.updated_at.strftime('%d.%m.%Y')
+        small &nbsp;by&nbsp;
+        small.text-muted= answer.user.name
+
+      - if current_user&.author_of?(answer)
+        .answer__actions.d-flex.justify-content-end
+          = link_to 'Edit', '#', class: 'js-edit-answer-link mr-2'
+          = link_to 'Delete', answer_path(answer), remote: true, method: :delete, data: { confirm: 'Are your sure?' }
+
+    .answer__form
+      = form_with model: answer, class: 'hide form' do |f|
+        .answer__errors= render 'shared/errors', resource: answer
+        .form-group
+          = f.label :body
+          = f.text_area :body, class: 'form-control'
+        = f.submit 'Save', class: 'btn btn-primary'

@@ -1,22 +1,34 @@
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, only: %i[create destroy]
+  before_action :authenticate_user!, only: %i[create update best destroy]
 
   def create
     @answer = question.answers.new(answer_params)
-    @answer.user = current_user
-    if answer.save
-      redirect_to question, notice: 'Your answer was successfully created'
+    answer.user = current_user
+    answer.save
+  end
+
+  def update
+    if current_user.author_of?(answer)
+      answer.update(answer_params)
     else
-      render 'questions/show'
+      redirect_to answer.question, notice: 'You have no rights to edit this answer.'
     end
   end
 
   def destroy
     if current_user.author_of?(answer)
       answer.destroy
-      redirect_to answer.question, notice: 'Your answer was successfully deleted.'
     else
       redirect_to answer.question, notice: 'You have no rights to delete this answer.'
+    end
+  end
+
+  def best
+    if current_user.author_of?(answer.question)
+      @best_before = answer.question.best_answer
+      answer.mark_as_best!
+    else
+      redirect_to answer.question, notice: 'You have no rights to do this action.'
     end
   end
 

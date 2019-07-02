@@ -1,6 +1,11 @@
-ul.questions
+h1 Questions
+
+- if @questions.count == 0
+  p No questions yet
+
+ul.questions.mb-5
   - @questions.each do |question|
     li.question= link_to question.title, question
 
-p= link_to 'Ask question', new_question_path
+= link_to 'Ask question', new_question_path, class: 'btn btn-primary'
 

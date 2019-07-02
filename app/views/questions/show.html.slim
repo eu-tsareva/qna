@@ -1,22 +1,9 @@
-h1= @question.title
-p= @question.body
-p= @question.user.name
+.question.mb-5
+  .question__info.mb-5
+    = render 'question', question: @question
 
-- if current_user&.author_of?(@question)
-  ul.question__actions
-    li= link_to 'Edit', edit_question_path(@question)
-    li= link_to 'Delete', question_path(@question), method: :delete, data: { confirm: 'Are your sure?' }
-
-ul.question__answers
-  - @question.answers.each do |answer|
-    - unless answer.new_record?
-      li.answer
-        p= answer.body
-        p= answer.user.name
-        - if current_user&.author_of?(answer)
-          ul.answer__actions
-            li= link_to 'Delete', answer_path(answer), method: :delete, data: { confirm: 'Are your sure?' }
-
+  ul.question__answers.list-group.list-group-flush
+    = render @question.answers.order(best: :desc)
 
 = render 'answers/new', question: @question, answer: @answer
 

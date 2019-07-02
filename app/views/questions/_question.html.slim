@@ -1,0 +1,13 @@
+h1= question.title
+p= question.body
+p
+  small= question.updated_at.strftime('%d.%m.%Y')
+  small &nbsp;by&nbsp;
+  small.text-muted= question.user.name
+
+- if current_user&.author_of?(@question)
+  .question__actions.d-flex
+    = link_to 'Edit', '#', class: 'mr-3 js-question-edit-link'
+    = link_to 'Delete', question_path(@question), method: :delete, data: { confirm: 'Are your sure?' }
+  .question__edit.hide
+    = render 'form', question: @question

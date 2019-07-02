@@ -1,8 +1,13 @@
-= render 'shared/errors',resource: @question
+.question__errors
+  = render 'shared/errors',resource: question
 
-= form_with model: @question do |f|
-  = f.label :title
-  = f.text_field :title
-  = f.label :body
-  = f.text_area :body
-  = f.submit 'Ask'
+.question__form
+  = form_with model: question, class: 'form' do |f|
+    .form-group
+      = f.label :title
+      = f.text_field :title, class: 'form-control'
+    .form-group
+      = f.label :body
+      = f.text_area :body, class: 'form-control', rows: 4
+
+    = f.submit class: 'btn btn-primary'

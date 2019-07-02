@@ -21,7 +21,7 @@ feature 'User can delete his own question', %q(
       expect(page).to have_no_content questions.first.title
     end
 
-    scenario 'User wants to delete another user question' do
+    scenario 'wants to delete another user question' do
       question = create(:question, user: create(:user))
       visit question_path(question)
 
